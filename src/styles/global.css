@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #fbfaf7;
+  --color-ink: #17191c;
+  --color-muted: #4d535b;
+  --color-line: #e4e1da;
+  --color-col: #f2efe9;
+  --color-pill: #e6e2da;
+  --color-card: #fff;
+  --color-accent: #0f6b5c;
+  --color-accent-ink: #0b5347;
+  --color-tint: #e7f0ed;
+  --color-hyp: #6b4f0e;
+  --color-hyp-bg: #f6ecd2;
+  --color-dash: #c8c2b6;
+
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --breakpoint-board: 861px;
+}
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Card disclosure: native <details>, no JavaScript. */
+@layer components {
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.04);
+  }
+  .card[open] {
+    border-color: #c9d9d4;
+    box-shadow: 0 6px 20px rgb(15 107 92 / 0.08);
+  }
+  .card-next {
+    background: transparent;
+    border: 1.5px dashed var(--color-dash);
+    box-shadow: none;
+  }
+  .card-next[open] {
+    border-color: #a9bfb8;
+    box-shadow: none;
+  }
+  .card > summary {
+    list-style: none;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  .card > summary::-webkit-details-marker {
+    display: none;
+  }
+  .card > summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* The square box stays put; only the "+" glyph turns into an "x". */
+  .toggle::before {
+    content: "+";
+    display: block;
+    transition: transform 0.15s;
+  }
+  .card[open] .toggle::before {
+    transform: rotate(45deg);
+  }
+
+  .live-dot {
+    box-shadow: 0 0 0 0 rgb(15 107 92 / 0.5);
+    animation: pulse 2s infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot {
+      animation: none;
+    }
+    .toggle::before {
+      transition: none;
+    }
+  }
+}
+
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 7px rgb(15 107 92 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(15 107 92 / 0);
+  }
+}

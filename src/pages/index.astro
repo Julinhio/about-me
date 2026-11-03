@@ -1,0 +1,101 @@
+---
+import "../styles/global.css";
+import Card from "../components/Card.astro";
+import { columns, footer, intro, meta, prose } from "../data/board";
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const canonical = new URL(base, Astro.site).href;
+const total = columns.reduce((n, col) => n + col.cards.length, 0);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={canonical} />
+  </head>
+  <body class="bg-bg font-sans leading-normal text-ink">
+    <div class="mx-auto max-w-[1200px] px-5">
+      <header class="max-w-[760px] pt-12 pb-10 board:pt-[72px]">
+        <h1 class="font-serif text-[clamp(40px,7vw,60px)] leading-[1.04] font-normal tracking-[-.02em]">
+          {intro.name}
+        </h1>
+        <p class="mt-5 text-[clamp(19px,2.4vw,23px)] leading-[1.4]">{intro.line}</p>
+        <p class="mt-3.5 max-w-[62ch] text-[16.5px] leading-[1.6] text-muted">{intro.sub}</p>
+        <div class="mt-7 flex flex-wrap gap-2.5">
+          {
+            intro.links.map((link) => (
+              <a
+                href={link.href}
+                class:list={[
+                  "inline-flex min-h-11 items-center rounded-full border-[1.5px] px-5 text-[15px] font-semibold no-underline",
+                  link.primary ? "border-accent bg-accent text-white" : "border-ink text-ink",
+                ]}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </header>
+
+      <main>
+        <section aria-labelledby="board-title">
+          <div class="flex items-baseline justify-between gap-3 border-t border-line pt-[22px] pb-3.5">
+            <h2 id="board-title" class="font-serif text-[26px] leading-[1.2] font-normal">The board</h2>
+            <span class="font-mono text-[13px] font-medium text-muted">{total} tickets</span>
+          </div>
+          <div class="grid items-start gap-4 board:grid-cols-3">
+            {
+              columns.map((col) => (
+                <section class="rounded-[14px] bg-col p-3" aria-labelledby={`col-${col.key}`}>
+                  <div class="flex items-center gap-2 px-1.5 pt-1 pb-3">
+                    <h3
+                      id={`col-${col.key}`}
+                      class="text-[13px] leading-none font-bold tracking-[.07em] uppercase"
+                    >
+                      {col.title}
+                    </h3>
+                    <span class="rounded-full bg-pill px-2 py-0.5 font-mono text-xs font-semibold text-muted">
+                      {col.cards.length}
+                    </span>
+                  </div>
+                  {col.note && <p class="-mt-1 px-1.5 pb-3 text-[13.5px] text-muted italic">{col.note}</p>}
+                  <div class="grid gap-2.5">
+                    {col.cards.map((card) => (
+                      <Card card={card} />
+                    ))}
+                  </div>
+                </section>
+              ))
+            }
+          </div>
+        </section>
+
+        <div class="mt-12 grid gap-8 border-t border-line py-14 board:grid-cols-2 board:gap-10">
+          {
+            prose.map((block) => (
+              <section>
+                <h2 class="mb-3 font-serif text-2xl leading-[1.2] font-normal">{block.title}</h2>
+                <p class="leading-[1.65] text-muted">{block.text}</p>
+              </section>
+            ))
+          }
+        </div>
+      </main>
+
+      <footer class="flex flex-wrap gap-x-4 gap-y-1.5 border-t border-line pt-6 pb-10 text-sm text-muted">
+        <span>{footer.line}</span>
+        <a href={`mailto:${footer.email}`} class="text-accent-ink underline">{footer.email}</a>
+      </footer>
+    </div>
+  </body>
+</html>
